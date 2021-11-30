@@ -1,6 +1,6 @@
 import streamlit as st
 from multiapp import MultiApp
-import main, movement, workouts, introduction # import your app modules here
+import introduction,main, movement, workouts  # import your app modules here
 
 app = MultiApp()
 

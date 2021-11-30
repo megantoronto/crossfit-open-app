@@ -1,10 +1,10 @@
 import streamlit as st
 import psycopg2
-import os
+#import os
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib
+#import matplotlib.pyplot as plt
+#import matplotlib
 import plotly.express as px
 import plotly.graph_objects as go
 from total_reps import create_conn,gen_table_colors
