@@ -1,0 +1,6 @@
+psycopg2
+streamlit
+pandas
+numpy
+plotly
+datetime
