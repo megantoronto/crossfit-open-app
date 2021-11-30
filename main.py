@@ -36,7 +36,7 @@ def app():
         conn.close()
         return data
     
-
+    #@st.cache(allow_output_mutation=True,hash_funcs={"_thread.RLock": lambda _: None})
     def load_all_age_data(years,population="ignore"):
         conn=create_conn()
         final_data=pd.DataFrame()
@@ -137,7 +137,7 @@ def app():
 
     st.markdown("__Strat Age Data by Year and Athlete Rank__")
 
-    year = st.selectbox(label="Year",options=["All Years - Women","All Years - Men","2021","2020","2019","2018","2017","2016","2015","2014","2013","2012","2011"])
+    year = st.selectbox(label="Year",options=["2021","2020","2019","2018","2017","2016","2015","2014","2013","2012","2011","All Years - Women","All Years - Men"])
     population = st.selectbox(label="Select # of Athletes",options=[50,100,500,1000,5000,10000])
 
     if "All" in year:

@@ -54,9 +54,10 @@ def app():
     st.markdown(workout_text)
     #st.text(final_dict)
     #st.text(d.keys())
-    label_exceptions={'squat_clean': 'Squat Clean','snatch': 'Snatch','deadlift': 'Deadlift','clean_and_jerk': 'Clean and Jerk'}
+    label_exceptions={'squat_clean': 'Squat Clean','snatch': 'Snatch','deadlift': 'Deadlift','clean_and_jerk': 'Clean and Jerk','squat_snatch': 'Squat Snatch'}
     movements_labeled =[]
     for m in list(d.keys()):
+        st.text(d.keys())
         if m != "rest":
             if m[:-2] not in label_exceptions.keys():
                 movements_labeled.append(df_move[df_move['movement']==m]['label'].values[0])

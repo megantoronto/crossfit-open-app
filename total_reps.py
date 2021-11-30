@@ -319,7 +319,10 @@ def calc_total_reps(workout,score_data,df_rep,workout_num,gender,special):
                 final_dict['avg_time_per_round'].append('00:00.00')
     elif (df['type'].values[0]=="for_time"):
 #print("hi")
-        time_domain = timedelta(minutes=int(df['time_cap'].values[0]))
+        if workout in ['16.5','14.5','15.5']:
+            time_domain=0
+        else:
+            time_domain = timedelta(minutes=int(df['time_cap'].values[0]))
         if workout in special:
             score_data['scoredisplay_'+str(workout_num)] = np.where(score_data['scoredisplay_'+str(workout_num)]=="430",score_data['breakdown_'+str(workout_num)].apply(lambda s: s[s.find("(")+1:s.find(")")]),score_data['scoredisplay_'+str(workout_num)].apply(lambda x: x + " reps"))
         scores=score_data['scoredisplay_'+str(workout_num)].values
