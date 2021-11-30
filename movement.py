@@ -241,14 +241,14 @@ def app():
 
     d=df_mbw[df_mbw[str(movement_col)]==1]
 
-    y=d['type'].value_counts()
-    fig, ax = plt.subplots()
-    ax.set_ylabel('# of Workouts')
-    ax.set_title('Workout Types')
-    bars = plt.bar(y.index,height=y)
-    for bar in bars:
-        yval = bar.get_height()
-        plt.text(bar.get_x()+.3, yval + .1, "{:,}".format(yval))
+    # y=d['type'].value_counts()
+    # fig, ax = plt.subplots()
+    # ax.set_ylabel('# of Workouts')
+    # ax.set_title('Workout Types')
+    # bars = plt.bar(y.index,height=y)
+    # for bar in bars:
+    #     yval = bar.get_height()
+    #     plt.text(bar.get_x()+.3, yval + .1, "{:,}".format(yval))
     #st.pyplot(fig)
 
     
