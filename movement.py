@@ -113,7 +113,7 @@ def app():
         combo_dict[i]+=1
     combo_dict=dict(sorted(combo_dict.items(), key=lambda item: item[1],reverse=True))
 
-    fig, ax = plt.subplots(1, 1, tight_layout=True)
+    """ fig, ax = plt.subplots(1, 1, tight_layout=True)
     langs = list(combo_dict.keys())
     students = combo_dict.values()
     ax.barh(langs,students,color='#B64926')
@@ -124,7 +124,7 @@ def app():
     plt.title("Movements Paired With " + movement)
     plt.xlabel("Number of Workouts Paired With " + movement)
     plt.ylabel("Movement")
-    fig.set_size_inches(10, 5)
+    fig.set_size_inches(10, 5) """
     
     
 
@@ -143,8 +143,8 @@ def app():
     
     st.plotly_chart(fig_combo)
     movements_exclude=["deadlift_clean_hang_clean_overhead_complex"]
-    if movement_col not in movements_exclude:
-        st.pyplot(fig)
+    #if movement_col not in movements_exclude:
+     #   st.pyplot(fig)
     weighted_movements=['thruster','clean','power_clean','squat_clean_and_jerk','push_press','front_squat','shoulder_to_overhead','overhead_walking_lunge',
                     'squat_snatch','single_dumbbell_box_step_up','single_arm_dumbbell_overhead_walking_lunge',
                     'single_arm_dumbbell_hang_clean_and_jerk',
