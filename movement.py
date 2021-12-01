@@ -109,8 +109,8 @@ def app():
     combo_dict={}
     for i in s:
         if i not in combo_dict:
-            combo_dict[i]=0
-        combo_dict[i]+=1
+            combo_dict[i]=[0]
+        combo_dict[i][0]+=1
     combo_dict=dict(sorted(combo_dict.items(), key=lambda item: item[1],reverse=True))
 
     """ fig, ax = plt.subplots(1, 1, tight_layout=True)
@@ -125,6 +125,12 @@ def app():
     plt.xlabel("Number of Workouts Paired With " + movement)
     plt.ylabel("Movement")
     fig.set_size_inches(10, 5) """
+
+
+    df_combo = pd.DataFrame(combo_dict).transpose().reset_index()
+    df_combo.columns=['Movement','Count']
+    fig=px.bar(df_combo,x='Count',y="Movement",orientation='h',text=df_combo['Count'],title='Movements Paired With '+movement,
+    width=900,height=700,labels=dict(Count="Number of Times Paired With"))
     
     
 
@@ -135,16 +141,16 @@ def app():
     cells=dict(values=[d.year,d.workout,
         d.combinations],
         line_color='darkslategray',
-        fill_color = [table_colors*13],
+        fill_color = [table_colors*3],
         font = dict(size = 16),
         align = ['left',"center"],
-        height=30))],)
+        height=30))],layout=dict(height=calc_table_height(d)-100))
     fig_combo.update_layout(margin=dict(l=10,r=10, b=10,t=10),width=600)
     
     st.plotly_chart(fig_combo)
     movements_exclude=["deadlift_clean_hang_clean_overhead_complex"]
-    #if movement_col not in movements_exclude:
-     #   st.pyplot(fig)
+    if movement_col not in movements_exclude:
+        st.plotly_chart(fig)
     weighted_movements=['thruster','clean','power_clean','squat_clean_and_jerk','push_press','front_squat','shoulder_to_overhead','overhead_walking_lunge',
                     'squat_snatch','single_dumbbell_box_step_up','single_arm_dumbbell_overhead_walking_lunge',
                     'single_arm_dumbbell_hang_clean_and_jerk',
@@ -191,10 +197,12 @@ def app():
             df_men[movement_col+"_weight"]=df_men['men_'+movement_col+'_weight']
         df=pd.concat([df_women,df_men])
         if movement_col in ['deadlift','snatch','squat_clean','squat_snatch','clean_and_jerk']:
+            col1, col2 = st.columns(2)
             df_melt = pd.melt(df_women).dropna(how="any")
             women = df_melt[df_melt['variable'].str.contains("women")]
             s=[]
-            for index,row in women.iterrows():
+            test=women.drop_duplicates()
+            for index,row in test.iterrows():
                 s.append(df_women[df_women[row['variable']]==row['value']]['year'].values)
             years=[]
             counter=0
@@ -207,14 +215,17 @@ def app():
                         years.append(j)
                         counter+=1
             women['year']=years
-            fig_2 = px.line(women, x="year", y="value",color="variable", title="Weight")
+            fig_2 = px.line(women, x="year", y="value",color="variable", title="Women "+movement+ " Weight 2011-2021")
+            fig_2.update_xaxes(type='date',  tickformat="%Y")
             fig_2.update_traces(mode="markers+lines", hovertemplate=None)
             fig_2.update_layout(hovermode="x")
-            st.plotly_chart(fig_2)
+
+            col1.plotly_chart(fig_2)
             df_melt = pd.melt(df_men).dropna(how="any")
             men = df_melt[df_melt['variable'].str.contains("men")]
             s=[]
-            for index,row in men.iterrows():
+            test=men.drop_duplicates()
+            for index,row in test.iterrows():
                 s.append(df_men[df_men[row['variable']]==row['value']]['year'].values)
             years_men=[]
             counter=0
@@ -227,20 +238,89 @@ def app():
                         years_men.append(j)
                         counter+=1
             men['year']=years_men
-            fig_3 = px.line(men, x="year", y="value",color="variable", title="Weight")
+            fig_3 = px.line(men, x="year", y="value",color="variable", title="Men "+movement+" Weight 2011-2021")
+            fig_3.update_xaxes(type='date',  tickformat="%Y")
             fig_3.update_traces(mode="markers+lines", hovertemplate=None)
             fig_3.update_layout(hovermode="x")
-            st.plotly_chart(fig_3)
+            col2.plotly_chart(fig_3)
         else:
-            fig_2 = px.line(df, x="year", y=movement_col+"_weight",color="gender", title="Weight")
+            fig_2 = px.line(df, x="year", y=movement_col+"_weight",color="gender", title=movement+ " Weight 2011-2021",width=800,height=600)
+            fig_2.update_xaxes(type='date',  tickformat="%Y")
             fig_2.update_traces(mode="markers+lines", hovertemplate=None)
             fig_2.update_layout(hovermode="x")
             st.plotly_chart(fig_2)
 
+    final_avgs=[]
+    gender=st.selectbox(label="Gender",options=["Men","Women"])
+    order = st.selectbox(label="Rank Type",options=["Workout Rank","Overall Rank"])
+    workouts=d['workout']
+    buckets = [50,500,10000]
+    for workout in workouts:
+        if "a" in workout:
+            workout_num = workout[workout.find(".")+1:]
+        else:
+            workout_num = int(workout[workout.find(".")+1:])
+        
+        year="20"+workout[:workout.find(".")]
+        score_data = load_result_data(gender.lower(),year,workout_num,max(buckets),order)
+        final_dict,_,_,_,_=calc_total_reps(workout,score_data,df_rep,workout_num,gender.lower(),special)
+        avg_list=[]
+        for b in buckets:
+            avg_list.append(np.mean(list(final_dict[movement_col])[:int(b)]))
+        final_avgs.append(avg_list)
 
+    df=pd.DataFrame(final_avgs)
+    df.columns=['Top 50','Top 500','Top 10,000']
+    df=round(df,1)
+    df['Workout']=workouts
+    df=df[['Workout','Top 50','Top 500','Top 10,000']]
 
-    d=df_mbw[df_mbw[str(movement_col)]==1]
+    fig=go.Figure(data=[go.Table(header=dict(values=['Workout','Top 50','Top 500',
+        'Top 10,000'],
+        fill_color=headerColor,
+        font=dict(color='white', size=18),
+        line_color='darkslategray',),
+        cells=dict(values=[df['Workout'],df['Top 50'],
+            df['Top 500'],
+            df['Top 10,000']],
+            line_color='darkslategray',
+            fill_color = [table_colors*4],
+            font = dict(size = 16),
+            align = ["center"],
+            height=30))],
+            layout=dict(height=calc_table_height(df)-100)
+            )
+    fig.update_layout(margin=dict(l=10,r=10, b=10,t=10),width=600)
+    if order=="Workout Rank":
+        st.markdown("__Average Reps "+movement+" Per Top Workout Rank__")
+    else:
+        st.write("__Average Reps "+movement+" Per Top Overall Rank__")
+    st.plotly_chart(fig)
 
+    avg_df=pd.DataFrame(df[['Top 50','Top 500','Top 10,000']].mean()).reset_index()
+    avg_df.columns = ['Group','Average Total Reps']
+    avg_df = round(avg_df, 1)
+
+    fig_2 = go.Figure(data=[go.Table(header=dict(values=['Group','Average Total Reps'],
+        fill_color=headerColor,
+        font=dict(color='white', size=18),
+        line_color='darkslategray',),
+        cells=dict(values=[avg_df['Group'],avg_df['Average Total Reps']],
+            line_color='darkslategray',
+            fill_color = [table_colors*4],
+            font = dict(size = 16),
+            align = ["center"],
+            height=30))],
+            )
+    fig_2.update_layout(margin=dict(l=10,r=10, b=10,t=10))
+    if order=="Workout Rank":
+        st.write("__Total Average Reps "+movement+" Per Top Workout Rank Across All Workouts__")
+    else:
+        st.write("__Total Average Reps "+movement+" Per Top Overall Rank Across All Workouts__")
+
+    st.plotly_chart(fig_2)
+
+            
     # y=d['type'].value_counts()
     # fig, ax = plt.subplots()
     # ax.set_ylabel('# of Workouts')

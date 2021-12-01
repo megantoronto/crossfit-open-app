@@ -49,10 +49,15 @@ def load_data(table):
     conn.close()
     return data
 
-def load_result_data(gender,year,workout,rank):
+def load_result_data(gender,year,workout,rank,order="Workout Rank"):
     conn = create_conn()
-    query = '''SELECT rank_'''+str(workout)+''', competitorname, scoredisplay_'''+ str(workout)+''', breakdown_''' + str(workout)+''' FROM open_'''+str(year)+'''_'''+gender+ \
-    ''' WHERE scaled_''' +str(workout)+''' IN ('0','false') ORDER BY rank_''' +str(workout) +''' LIMIT '''+str(rank)
+    if order == "Workout Rank":
+        query = '''SELECT rank_'''+str(workout)+''', competitorname, scoredisplay_'''+ str(workout)+''', breakdown_''' + str(workout)+''' FROM open_'''+str(year)+'''_'''+gender+ \
+        ''' WHERE scaled_''' +str(workout)+''' IN ('0','false') ORDER BY rank_''' +str(workout) +''' LIMIT '''+str(rank)
+    else:
+        query = '''SELECT rank_'''+str(workout)+''', competitorname, scoredisplay_'''+ str(workout)+''', breakdown_''' + str(workout)+''' FROM open_'''+str(year)+'''_'''+gender+ \
+        ''' WHERE scaled_''' +str(workout)+''' IN ('0','false') ORDER BY overallrank LIMIT '''+str(rank)
+
     data = pd.read_sql(query, conn)
     #conn.close()
     return data
@@ -74,9 +79,10 @@ def calc_total_reps(workout,score_data,df_rep,workout_num,gender,special):
         reps=[8,10,12]
     d={}
     for i in range(0,len(movements)):
-        if movements[i] not in d:
-            d[movements[i]]=0
-        d[movements[i]]+=reps[i]
+        if movements[i] !='rest':
+            if movements[i] not in d:
+                d[movements[i]]=0
+            d[movements[i]]+=reps[i]
     scores=score_data['scoredisplay_'+str(workout[workout.find(".")+1:])].values
     final_dict ={}
     for i in  movements:
@@ -117,11 +123,11 @@ def calc_total_reps(workout,score_data,df_rep,workout_num,gender,special):
                 else:
                     switch=False
                 if switch:
-                    tracker_dict['dumbbell_front_rack_walking_lunges']+=10
+                    tracker_dict['dumbbell_front_rack_walking_lunge']+=10
                     tracker_dict['toes_to_bar']+=16
                     tracker_dict['dumbbell_power_clean']+=8
                 else:
-                    tracker_dict['dumbbell_front_rack_walking_lunges']+=10
+                    tracker_dict['dumbbell_front_rack_walking_lunge']+=10
                     tracker_dict['bar_muscle_up']+=16
                     tracker_dict['dumbbell_power_clean']+=8
                 
@@ -273,8 +279,11 @@ def calc_total_reps(workout,score_data,df_rep,workout_num,gender,special):
                 final_dict[list(final_dict.keys())[i]].append(final_vals[i])
     elif (df['type'].values[0]=="for_time") & pd.notnull(df['rounds'].values[0]):
         vals = d.values()
-        total_reps = sum(vals)
         rounds= df['rounds'].values[0]
+        if workout != "18.3":
+            total_reps = sum(vals)*rounds
+        else:
+            total_reps=sum(vals)
         time_domain = timedelta(minutes=int(df['time_cap'].values[0]))
         scores=score_data['scoredisplay_'+str(workout[workout.find(".")+1:])].values
         #final_dict = {}
@@ -373,8 +382,9 @@ def calc_total_reps(workout,score_data,df_rep,workout_num,gender,special):
                 final_vals = list(tracker.values())
                 for i in range(0,len(final_vals)):
                     final_dict[list(final_dict.keys())[i]].append(final_vals[i])
-                        
-        total_reps=0
+        
+        
+        total_reps=np.sum(list(d.values()))
     elif (df['type'].values[0]=="for_load"):
         total_reps=0
         time_domain=0
