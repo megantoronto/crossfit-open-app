@@ -64,7 +64,6 @@ The Workout Performance tab analyzes the following information:
 - 15.1a is missing some scores which for some reason cannot be found on games.crossfit.com.
 
 ## General Notes
-- This app only analyzes performance and movement data based on people who have performed the workout as prescribed. There is no current analysis or inclusion of scaled workout data at the momement.
-- The workouts that have shown up in the Open as combos (15.1/15.1a, 18.2/18.2a, 21.3/21.4) are currently all being treated as separate workouts. At a later date I would like to find a better way to represent how these workouts interact with each other.
-    - 
+- This app only analyzes performance and movement data based on people who have performed the workout as prescribed. There is no current analysis or inclusion of scaled workout data at the moment.
+- The workouts that have shown up in the Open as combos (15.1/15.1a, 18.2/18.2a, 21.3/21.4) are currently all being treated as separate workouts. At a later date I would like to find a better way to represent how these workouts interact with each other. 
     ''')

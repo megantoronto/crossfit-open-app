@@ -14,7 +14,7 @@ def app():
     df_mbw=load_data("movements_by_workout")
     df=pd.DataFrame(df_mbw[['type','year']].groupby('type').size()).reset_index()
     df.columns=['Workout Type','Count']
-    fig=px.pie(df,values='Count',names='Workout Type',title="Total Number of Workouts: 56",width=800,height=600)
+    fig=px.pie(df,values='Count',names='Workout Type',title="Total Number of Workouts: 57",width=800,height=600)
     fig.update_traces(textinfo='value+percent')
 
     st.plotly_chart(fig)
