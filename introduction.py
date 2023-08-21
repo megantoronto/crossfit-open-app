@@ -23,7 +23,7 @@ The Demographics tab analyzes the following information:
 - Age Category breakdown
 - Height breakdown
 - Weight breakdown
-- Can filter each breakdown by overall CrossFit Open rank to see what the composition looks like for the top 50, 100, etc
+- Can filter each breakdown by overall CrossFit Open rank to see what the composition looks like for the top 50, 100, etc.
 
 **Data caveats:**
 - I was only able to pull the leaderboard data for people from age 16-54. The 14-15 and 55+ age categories are hosted on a separate leaderboard that I did not have a chance to pull. The total participation numbers are therefore caveated for people aged 16-54.
@@ -31,7 +31,7 @@ The Demographics tab analyzes the following information:
 - Height and weight are self reported values, so take these numbers with a grain of salt. I also had to add in some filtering for values that were clearly incorrect and some other editing, so use this analysis as a general representation rather than a source of truth.
 
 ## Movements
-The Movements tab analyzes the following information
+The Movements tab analyzes the following information:
 - Shows all movements that have appeared in the CrossFit Open
 - Allows you to filter by a single movement to see:
     - Which workouts that movement appeared in
@@ -65,5 +65,8 @@ The Workout Performance tab analyzes the following information:
 
 ## General Notes
 - This app only analyzes performance and movement data based on people who have performed the workout as prescribed. There is no current analysis or inclusion of scaled workout data at the moment.
-- The workouts that have shown up in the Open as combos (15.1/15.1a, 18.2/18.2a, 21.3/21.4) are currently all being treated as separate workouts. At a later date I would like to find a better way to represent how these workouts interact with each other. 
+- The workouts that have shown up in the Open as combos (15.1/15.1a, 18.2/18.2a, 21.3/21.4) are currently all being treated as separate workouts. At a later date I would like to find a better way to represent how these workouts interact with each other.
+
+## Questions/Comments?
+Please reach out to megantoronto7@gmail.com
     ''')

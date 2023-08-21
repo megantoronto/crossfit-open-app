@@ -214,8 +214,8 @@ def app():
     avg_height=str(avg_height//12)+"'"+str((avg_height%12))+'''"'''
     df=pd.DataFrame(df.groupby(['height_label','height']).size()).reset_index()
     df.columns=['Height','height_num','Count']
-    if population-np.sum(df['Count'])>0:
-        df=df.append({'Height':'Unknown','Count':population-np.sum(df['Count'])},ignore_index=True)
+    if population_h-np.sum(df['Count'])>0:
+        df=pd.concat([df,pd.DataFrame(data={'Height':['Unknown'],'Count':[population_h-np.sum(df['Count'])]})])
     df=df.sort_values(by=['height_num'])
 
     fig=px.bar(df,x="Height",y='Count',text=df['Count'].map(u"{:,}".format),
@@ -230,7 +230,7 @@ def app():
 
     year_w = st.selectbox(label="Year",options=["2021","2020","2019","2018","2017"],key="weight")
     gender_w=st.selectbox(label="Gender",options=["Men","Women"],key="weight_gen")
-    population_w = st.selectbox(label="Select # of Athletes",options=[50,100,500,1000,5000,10000],key='weight')
+    population_w = st.selectbox(label="Select # of Athletes",options=[50,100,500,1000,5000,10000],key='weight_pop')
 
 
     df_w=load_year_data(year_w,population_w)

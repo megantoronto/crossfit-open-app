@@ -25,6 +25,7 @@ def app():
 
     fig=px.bar(df,x='Year',y='Count',color="Workout Type",text=df['Count'],title="Count of Workout Types by Year",
     width=800,height=600)
+    fig.update_layout(xaxis = {'type' : 'category'})
     st.plotly_chart(fig)
 
     st.subheader('Time Domains')
@@ -54,6 +55,7 @@ def app():
                 title="Maximum Time Domain Categorization by Year for AMRAPs, For Time, and For Load Workouts",
                 width=800,height=600)
     #category_orders={"Age Category": ["Unknown","16-17","18-24","25-30","31-34","35-39","40-44","45-49","50-54"],}
+    fig.update_layout(xaxis = {'type' : 'category'})
     fig.update_traces(hovertemplate='Year: %{x}<br>Time Category: %{customdata[0]} <br>Percentage: %{customdata[1]} <br>Count: %{text}')
     st.plotly_chart(fig)
 
